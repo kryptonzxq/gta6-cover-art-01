@@ -1,7 +1,12 @@
+# Dependencies and local tooling (never part of the entry).
 node_modules/
-out/
-out-wide-1920x1080.png
 package.json
 package-lock.json
+
+# Build / test artefacts produced locally.
+out/
 test-shots.mjs
 chrome.zip
+
+# Logs.
+*.log
