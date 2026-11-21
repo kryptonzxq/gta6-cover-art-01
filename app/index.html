@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vice Cover Studio — GTA-style cover art maker</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ff2e88'/%3E%3Ctext x='16' y='22' font-family='Arial Black' font-size='14' font-weight='900' fill='white' text-anchor='middle'%3EVC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">VC</span>
+    <div>
+      <h1>Vice Cover Studio</h1>
+      <p>Turn any photo into Vice City-style cover art — offline, on your machine.</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="undo" type="button" disabled>Undo</button>
+    <button id="redo" type="button" disabled>Redo</button>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</header>
+
+<main class="app">
+  <section class="controls" aria-label="Editor controls">
+    <div class="group">
+      <h2>1 · Photos</h2>
+      <label class="file-btn">Upload photos
+        <input id="photo" type="file" accept="image/*" multiple hidden>
+      </label>
+      <p class="hint">Or drag &amp; drop photos onto the cover. Click a panel to select it, then drag inside it to reposition.</p>
+      <div class="sample-row" id="samples">
+        <span>Samples:</span>
+        <button type="button" data-sample="boulevard">Boulevard</button>
+        <button type="button" data-sample="pier">Pier</button>
+        <button type="button" data-sample="neon">Neon St</button>
+        <button type="button" data-sample="palms">Palms</button>
+      </div>
+      <button id="load-sample-set" type="button" class="secondary">Load sample project</button>
+      <div id="panel-list" class="panel-list"></div>
+      <div class="row">
+        <label>Zoom <span id="zoom-val">100%</span>
+          <input id="zoom" type="range" min="1" max="2.5" step="0.01" value="1">
+        </label>
+      </div>
+      <div class="row btn-row">
+        <button id="replace" type="button">Replace photo</button>
+        <button id="remove-photo" type="button">Remove</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>2 · Template</h2>
+      <div class="template-grid">
+        <button type="button" data-layout="grid" class="active">Vice Grid</button>
+        <button type="button" data-layout="strip">Sunset Strip</button>
+        <button type="button" data-layout="hero">Hero Split</button>
+        <button type="button" data-layout="quad">Quad</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>3 · Text</h2>
+      <label>Title
+        <input id="title" type="text" maxlength="24" value="VICE CITY">
+      </label>
+      <div class="row">
+        <label>Size
+          <input id="title-size" type="range" min="6" max="16" step="1" value="11">
+        </label>
+        <label>Colour
+          <input id="title-color" type="color" value="#ffffff">
+        </label>
+      </div>
+      <div class="row checks">
+        <label><input id="title-outline" type="checkbox" checked> Outline</label>
+        <label><input id="title-glow" type="checkbox" checked> Neon glow</label>
+      </div>
+      <label>Subtitle
+        <input id="subtitle" type="text" maxlength="40" value="A STORY IN EVERY FRAME">
+      </label>
+      <div class="row">
+        <label>Subtitle colour
+          <input id="subtitle-color" type="color" value="#ffd166">
+        </label>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>4 · Grade &amp; effects</h2>
+      <label>Sunset grade <input id="sunset" type="range" min="0" max="100" value="55"></label>
+      <label>Film grain <input id="grain" type="range" min="0" max="100" value="25"></label>
+      <label>Vignette <input id="vignette" type="range" min="0" max="100" value="50"></label>
+      <label>Contrast <input id="contrast" type="range" min="60" max="160" value="108"></label>
+      <label>Brightness <input id="brightness" type="range" min="70" max="140" value="104"></label>
+      <label>Saturation <input id="saturation" type="range" min="50" max="200" value="118"></label>
+    </div>
+
+    <div class="group">
+      <h2>5 · Export</h2>
+      <div class="size-grid">
+        <button type="button" data-size="square" class="active">1080 × 1080</button>
+        <button type="button" data-size="portrait">1080 × 1350</button>
+        <button type="button" data-size="wide">1920 × 1080</button>
+      </div>
+      <button id="export" type="button" class="primary">Export PNG</button>
+      <p id="status" role="status">Load a photo or the sample project to begin.</p>
+    </div>
+  </section>
+
+  <section class="stage" id="stage" aria-label="Cover preview">
+    <canvas id="cover" width="1080" height="1080"></canvas>
+    <p class="stage-hint">Preview — click a panel to select it, drag to reposition its photo.</p>
+  </section>
+</main>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

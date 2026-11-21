@@ -1,0 +1,7 @@
+node_modules/
+out/
+out-wide-1920x1080.png
+package.json
+package-lock.json
+test-shots.mjs
+chrome.zip
