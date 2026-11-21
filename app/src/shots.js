@@ -1,31 +1,45 @@
-// Deterministic screenshot scenes (?shot=1..3). Each scene loads the same
-// sample photos and the same text every time, so screenshots are repeatable.
-const SCENES = {
+// shots.js — deterministic screenshot scenes for Vice Cover Studio.
+// runShot(id, params, apply) loads the same sample photos every time and
+// hands one fixed scene to the editor. Used by ?shot=1/2/3 in the browser
+// test so the screenshots are reproducible.
+//
+//   params.load(src)  -> Promise<HTMLImageElement> for a path under app/
+//   apply(scene, images) -> installs the scene's state and panel images
+
+export const SHOT_SCENES = {
   1: {
     layout: 'grid',
-    sizeKey: 'square',
-    title: { text: 'VICE CITY', color: '#ffffff' },
-    subtitle: { text: 'A STORY IN EVERY FRAME' },
-    photos: ['./samples/boulevard.jpg', './samples/pier.jpg', './samples/neon.jpg'],
+    size: 'square',
+    title: 'VICE CITY',
+    subtitle: 'WELCOME TO THE SUNSHINE STATE',
+    photos: ['samples/pier.jpg', 'samples/boulevard.jpg', 'samples/neon.jpg'],
+    effects: { sunset: 0.6, grain: 0.5, vignette: 0.55, contrast: 1.06, brightness: 1.0, saturation: 1.18 },
   },
   2: {
     layout: 'strip',
-    sizeKey: 'portrait',
-    title: { text: 'SUNSET HEIST', color: '#ffe9f4' },
-    subtitle: { text: 'NEON NIGHTS • MIAMI' },
-    photos: ['./samples/pier.jpg', './samples/neon.jpg', './samples/palms.jpg'],
+    size: 'portrait',
+    title: 'SUNSET HEIST',
+    subtitle: 'ONE LAST SCORE',
+    photos: ['samples/palms.jpg', 'samples/neon.jpg', 'samples/pier.jpg'],
+    effects: { sunset: 0.7, grain: 0.55, vignette: 0.6, contrast: 1.08, brightness: 1.02, saturation: 1.22 },
   },
   3: {
     layout: 'hero',
-    sizeKey: 'wide',
-    title: { text: 'PALM & CHROME', color: '#ffffff' },
-    subtitle: { text: 'VICE CITY • 2026' },
-    photos: ['./samples/boulevard.jpg', './samples/palms.jpg', './samples/neon.jpg'],
+    size: 'wide',
+    title: 'PALM & CHROME',
+    subtitle: 'VICE CITY • 2026',
+    photos: ['samples/neon.jpg', 'samples/palms.jpg', 'samples/boulevard.jpg'],
+    effects: { sunset: 0.55, grain: 0.45, vignette: 0.5, contrast: 1.05, brightness: 1.0, saturation: 1.15 },
   },
 };
 
-/** Runs scene `id`, calling `apply(scene)` once its definition is ready. */
-export function runShot(id, _params, apply) {
-  const scene = SCENES[id] || SCENES[1];
-  apply(scene);
+export async function runShot(id, params, apply) {
+  const scene = SHOT_SCENES[id];
+  if (!scene) return false;
+  const images = [];
+  for (const src of scene.photos) {
+    images.push(await params.load(src));
+  }
+  apply(scene, images);
+  return true;
 }

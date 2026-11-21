@@ -1,119 +1,140 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vice Cover Studio — GTA-style cover art maker</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ff2e88'/%3E%3Ctext x='16' y='22' font-family='Arial Black' font-size='14' font-weight='900' fill='white' text-anchor='middle'%3EVC%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Turn your photos and a caption into a Vice City-style multi-panel poster. Offline, no uploads, exports PNG at 1080×1080, 1080×1350 and 1920×1080.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff2e88'/%3E%3Cstop offset='1' stop-color='%23ff9a3d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Arial Black' font-size='34' font-weight='900' text-anchor='middle' fill='white'%3EV%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">
-    <span class="brand-mark">VC</span>
-    <div>
-      <h1>Vice Cover Studio</h1>
-      <p>Turn any photo into Vice City-style cover art — offline, on your machine.</p>
-    </div>
-  </div>
-  <div class="top-actions">
-    <button id="undo" type="button" disabled>Undo</button>
-    <button id="redo" type="button" disabled>Redo</button>
-    <button id="reset" type="button">Reset</button>
-  </div>
+  <div class="brand"><span class="brand-mark">V</span><span class="brand-name">VICE COVER STUDIO</span></div>
+  <p class="tagline">Your photos. A Vice City sunset. One poster.</p>
 </header>
 
-<main class="app">
-  <section class="controls" aria-label="Editor controls">
-    <div class="group">
-      <h2>1 · Photos</h2>
-      <label class="file-btn">Upload photos
-        <input id="photo" type="file" accept="image/*" multiple hidden>
-      </label>
-      <p class="hint">Or drag &amp; drop photos onto the cover. Click a panel to select it, then drag inside it to reposition.</p>
-      <div class="sample-row" id="samples">
-        <span>Samples:</span>
-        <button type="button" data-sample="boulevard">Boulevard</button>
-        <button type="button" data-sample="pier">Pier</button>
-        <button type="button" data-sample="neon">Neon St</button>
-        <button type="button" data-sample="palms">Palms</button>
-      </div>
-      <button id="load-sample-set" type="button" class="secondary">Load sample project</button>
-      <div id="panel-list" class="panel-list"></div>
-      <div class="row">
-        <label>Zoom <span id="zoom-val">100%</span>
-          <input id="zoom" type="range" min="1" max="2.5" step="0.01" value="1">
-        </label>
-      </div>
-      <div class="row btn-row">
-        <button id="replace" type="button">Replace photo</button>
-        <button id="remove-photo" type="button">Remove</button>
-      </div>
+<main class="layout">
+  <section class="stage">
+    <div id="preview-wrap" class="preview-wrap">
+      <canvas id="preview" width="900" height="900"></canvas>
+      <div id="drop-hint" class="drop-hint">Drop photos here</div>
     </div>
+    <p class="hint">Click a panel to select it &nbsp;•&nbsp; drag inside a panel to move the photo &nbsp;•&nbsp; drop photos onto the cover</p>
+  </section>
 
-    <div class="group">
-      <h2>2 · Template</h2>
-      <div class="template-grid">
-        <button type="button" data-layout="grid" class="active">Vice Grid</button>
-        <button type="button" data-layout="strip">Sunset Strip</button>
-        <button type="button" data-layout="hero">Hero Split</button>
-        <button type="button" data-layout="quad">Quad</button>
+  <aside class="controls">
+    <section class="card">
+      <h2>1 · Layout</h2>
+      <div class="templates">
+        <button type="button" class="template is-active" data-layout="grid" title="Vice Grid — one big panel, two stacked">
+          <span class="mini"><i style="left:0;top:0;width:60%;height:100%"></i><i style="left:63%;top:0;width:37%;height:48%"></i><i style="left:63%;top:52%;width:37%;height:48%"></i></span>
+          Vice Grid
+        </button>
+        <button type="button" class="template" data-layout="strip" title="Sunset Strip — three equal panels">
+          <span class="mini"><i style="left:0;top:0;width:31%;height:100%"></i><i style="left:34.5%;top:0;width:31%;height:100%"></i><i style="left:69%;top:0;width:31%;height:100%"></i></span>
+          Sunset Strip
+        </button>
+        <button type="button" class="template" data-layout="hero" title="Hero Split — big hero on top, two below">
+          <span class="mini"><i style="left:0;top:0;width:100%;height:60%"></i><i style="left:0;top:64%;width:48%;height:36%"></i><i style="left:52%;top:64%;width:48%;height:36%"></i></span>
+          Hero Split
+        </button>
+        <button type="button" class="template" data-layout="quad" title="Quad — four equal panels">
+          <span class="mini"><i style="left:0;top:0;width:48%;height:48%"></i><i style="left:52%;top:0;width:48%;height:48%"></i><i style="left:0;top:52%;width:48%;height:48%"></i><i style="left:52%;top:52%;width:48%;height:48%"></i></span>
+          Quad
+        </button>
       </div>
-    </div>
+    </section>
 
-    <div class="group">
-      <h2>3 · Text</h2>
-      <label>Title
-        <input id="title" type="text" maxlength="24" value="VICE CITY">
+    <section class="card">
+      <h2>2 · Photos</h2>
+      <div class="row">
+        <label class="btn" for="file-input">Upload photos</label>
+        <input id="file-input" type="file" accept="image/*" multiple hidden>
+        <button type="button" class="btn ghost" id="load-sample-set">Load sample project</button>
+      </div>
+      <div id="sample-strip" class="sample-strip">
+        <img src="samples/pier.jpg" data-sample="samples/pier.jpg" data-name="Pier" alt="Sample: pier at sunset" title="Pier">
+        <img src="samples/boulevard.jpg" data-sample="samples/boulevard.jpg" data-name="Boulevard" alt="Sample: boulevard" title="Boulevard">
+        <img src="samples/neon.jpg" data-sample="samples/neon.jpg" data-name="Neon City" alt="Sample: neon city skyline" title="Neon City">
+        <img src="samples/palms.jpg" data-sample="samples/palms.jpg" data-name="Palms" alt="Sample: palm sunset" title="Palms">
+      </div>
+      <p class="fine">Click a sample to put it in the selected panel. Your photos never leave this machine.</p>
+      <div class="panel-box">
+        <div class="panel-head"><span id="panel-label">Panel 1</span><span id="panel-photo" class="panel-photo">empty</span></div>
+        <label class="slider-label">Zoom <span id="zoom-val">1.00×</span>
+          <input id="zoom" type="range" min="1" max="3" step="0.05" value="1">
+        </label>
+        <div class="row">
+          <button type="button" class="btn small" id="replace-photo">Replace photo</button>
+          <button type="button" class="btn small ghost" id="remove-photo">Remove</button>
+          <input id="replace-input" type="file" accept="image/*" hidden>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3 · Title &amp; caption</h2>
+      <label class="field">Title
+        <input id="title" type="text" value="VICE CITY" maxlength="40" autocomplete="off">
+      </label>
+      <label class="field">Subtitle
+        <input id="subtitle" type="text" value="WELCOME TO THE SUNSHINE STATE" maxlength="60" autocomplete="off">
+      </label>
+      <label class="slider-label">Title size <span id="title-size-val">110</span>
+        <input id="title-size" type="range" min="48" max="180" step="1" value="110">
+      </label>
+      <label class="slider-label">Letter tracking <span id="tracking-val">0.10</span>
+        <input id="tracking" type="range" min="0" max="0.4" step="0.01" value="0.1">
       </label>
       <div class="row">
-        <label>Size
-          <input id="title-size" type="range" min="6" max="16" step="1" value="11">
-        </label>
-        <label>Colour
+        <label class="field inline">Colour
           <input id="title-color" type="color" value="#ffffff">
         </label>
+        <label class="check"><input id="outline" type="checkbox" checked> Outline</label>
+        <label class="check"><input id="glow" type="checkbox" checked> Neon glow</label>
       </div>
-      <div class="row checks">
-        <label><input id="title-outline" type="checkbox" checked> Outline</label>
-        <label><input id="title-glow" type="checkbox" checked> Neon glow</label>
-      </div>
-      <label>Subtitle
-        <input id="subtitle" type="text" maxlength="40" value="A STORY IN EVERY FRAME">
-      </label>
-      <div class="row">
-        <label>Subtitle colour
-          <input id="subtitle-color" type="color" value="#ffd166">
-        </label>
-      </div>
-    </div>
+    </section>
 
-    <div class="group">
+    <section class="card">
       <h2>4 · Grade &amp; effects</h2>
-      <label>Sunset grade <input id="sunset" type="range" min="0" max="100" value="55"></label>
-      <label>Film grain <input id="grain" type="range" min="0" max="100" value="25"></label>
-      <label>Vignette <input id="vignette" type="range" min="0" max="100" value="50"></label>
-      <label>Contrast <input id="contrast" type="range" min="60" max="160" value="108"></label>
-      <label>Brightness <input id="brightness" type="range" min="70" max="140" value="104"></label>
-      <label>Saturation <input id="saturation" type="range" min="50" max="200" value="118"></label>
-    </div>
+      <label class="slider-label">Sunset grade <span id="sunset-val">0.60</span>
+        <input id="sunset" type="range" min="0" max="1" step="0.01" value="0.6">
+      </label>
+      <label class="slider-label">Film grain <span id="grain-val">0.50</span>
+        <input id="grain" type="range" min="0" max="1" step="0.01" value="0.5">
+      </label>
+      <label class="slider-label">Vignette <span id="vignette-val">0.55</span>
+        <input id="vignette" type="range" min="0" max="1" step="0.01" value="0.55">
+      </label>
+      <label class="slider-label">Contrast <span id="contrast-val">1.06</span>
+        <input id="contrast" type="range" min="0.5" max="1.6" step="0.01" value="1.06">
+      </label>
+      <label class="slider-label">Brightness <span id="brightness-val">1.00</span>
+        <input id="brightness" type="range" min="0.6" max="1.4" step="0.01" value="1">
+      </label>
+      <label class="slider-label">Saturation <span id="saturation-val">1.18</span>
+        <input id="saturation" type="range" min="0" max="2" step="0.01" value="1.18">
+      </label>
+    </section>
 
-    <div class="group">
+    <section class="card">
       <h2>5 · Export</h2>
-      <div class="size-grid">
-        <button type="button" data-size="square" class="active">1080 × 1080</button>
-        <button type="button" data-size="portrait">1080 × 1350</button>
-        <button type="button" data-size="wide">1920 × 1080</button>
+      <div class="sizes">
+        <button type="button" class="size is-active" data-size="square">1080 × 1080</button>
+        <button type="button" class="size" data-size="portrait">1080 × 1350</button>
+        <button type="button" class="size" data-size="wide">1920 × 1080</button>
       </div>
-      <button id="export" type="button" class="primary">Export PNG</button>
-      <p id="status" role="status">Load a photo or the sample project to begin.</p>
-    </div>
-  </section>
+      <button type="button" class="btn primary big" id="export">Export PNG</button>
+      <div class="row">
+        <button type="button" class="btn small ghost" id="undo">Undo</button>
+        <button type="button" class="btn small ghost" id="redo">Redo</button>
+        <button type="button" class="btn small ghost" id="reset">Reset</button>
+      </div>
+    </section>
 
-  <section class="stage" id="stage" aria-label="Cover preview">
-    <canvas id="cover" width="1080" height="1080"></canvas>
-    <p class="stage-hint">Preview — click a panel to select it, drag to reposition its photo.</p>
-  </section>
+    <p id="status" class="status" role="status">Ready. Load the sample project or drop in your own photos.</p>
+  </aside>
 </main>
 
 <script type="module" src="./src/main.js"></script>
